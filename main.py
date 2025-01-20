@@ -18,7 +18,7 @@ MOT_FLASH_ANZAN_SETTINGS = {
     "Span": 1,
     "Generations": 3,
     "Trackers": 2,
-    "Distractors": 4,
+    "Distractors": 8,
     "Interval": 2.0,
     "Speed": 6.0,
 }
@@ -96,7 +96,7 @@ mot_flash_anzan_input_number = 0
 mot_flash_anzan_input = ""
 mot_flash_anzan_x_filter = []
 mot_flash_anzan_y_filter = []
-mot_flash_anzan_grid_size = measure_text("0" * MOT_FLASH_ANZAN_SETTINGS["Span"], 50) * 2
+mot_flash_anzan_grid_size = measure_text("0" * MOT_FLASH_ANZAN_SETTINGS["Span"], 25)
 mot_flash_anzan_directions = []
 mot_flash_anzan_generations = 0
 mot_flash_anzan_init_clock = 0.0
@@ -280,7 +280,7 @@ while not window_should_close():
                     case GameMode.MOT_FLASH_ANZAN:
                         if is_evaluate_time:
                             directions_data = mot_flash_anzan_directions[mot_flash_anzan_input_number]
-                            draw_rectangle(int(directions_data["Position"].x), int(directions_data["Position"].y), int(measure_text(str(sum(mot_flash_anzan_number_list[mot_flash_anzan_input_number])), 50)), 50, WHITE)
+                            draw_rectangle(int(directions_data["Position"].x), int(directions_data["Position"].y), int(measure_text(str(sum(mot_flash_anzan_number_list[mot_flash_anzan_input_number])), 25)), 25, WHITE)
                             pressed_key = get_key_pressed()
                             if pressed_key >= 48 and pressed_key <= 57:
                                 mot_flash_anzan_input += chr(pressed_key)
@@ -296,7 +296,7 @@ while not window_should_close():
                                     mot_flash_anzan_input = ""
                                     mot_flash_anzan_x_filter = []
                                     mot_flash_anzan_y_filter = []
-                                    mot_flash_anzan_grid_size = measure_text("0" * MOT_FLASH_ANZAN_SETTINGS["Span"], 50) * 2
+                                    mot_flash_anzan_grid_size = measure_text("0" * MOT_FLASH_ANZAN_SETTINGS["Span"], 25)
                                     mot_flash_anzan_directions = []
                                     mot_flash_anzan_generations = 0
                                     mot_flash_anzan_init_clock = 0.0
@@ -306,7 +306,7 @@ while not window_should_close():
                             to_write = mot_flash_anzan_input
                             if int(get_time()) % 2 == 0:
                                 to_write += "_"
-                            draw_text(to_write, int(directions_data["Position"].x), int(directions_data["Position"].y), 50, BLACK)
+                            draw_text(to_write, int(directions_data["Position"].x), int(directions_data["Position"].y), 25, BLACK)
                         else:
                             time_elapsed = get_time() - interval_clock
                             if mot_flash_anzan_init_clock == 0.0:
@@ -335,13 +335,13 @@ while not window_should_close():
                                             pass
                                         if mot_flash_anzan_generations == 1:
                                             mot_flash_anzan_number_list.append([])
-                                            x_cell = random.choice(list(set(range(int(RESOLUTION_X / mot_flash_anzan_grid_size))) - set(mot_flash_anzan_x_filter)))
-                                            y_cell = random.choice(list(set(range(int(RESOLUTION_Y / mot_flash_anzan_grid_size))) - set(mot_flash_anzan_y_filter)))
+                                            x_cell = random.choice(list(set(range(int(RESOLUTION_X / mot_flash_anzan_grid_size))[1:(int(RESOLUTION_X / mot_flash_anzan_grid_size))]) - set(mot_flash_anzan_x_filter)))
+                                            y_cell = random.choice(list(set(range(int(RESOLUTION_Y / 50))[1:(int(RESOLUTION_Y / 50))]) - set(mot_flash_anzan_y_filter)))
                                             mot_flash_anzan_x_filter.append(x_cell)
                                             mot_flash_anzan_y_filter.append(y_cell)
                                             random_theta = random.random() * (2 * math.pi)
                                             directions_data = {
-                                                "Position": Vector2((x_cell * mot_flash_anzan_grid_size) + (mot_flash_anzan_grid_size / 2), (y_cell * mot_flash_anzan_grid_size) + (mot_flash_anzan_grid_size / 2)),
+                                                "Position": Vector2((x_cell * mot_flash_anzan_grid_size) + (mot_flash_anzan_grid_size / 2), (y_cell * 50) + 25),
                                                 "Direction": vector2_scale(Vector2(math.cos(random_theta), math.sin(random_theta)), MOT_FLASH_ANZAN_SETTINGS["Speed"]),
                                                 "Speed": MOT_FLASH_ANZAN_SETTINGS["Speed"]
                                             }
@@ -359,13 +359,14 @@ while not window_should_close():
                                         if j in changed_filter:
                                             continue
                                         b = mot_flash_anzan_directions[j]["Position"]
-                                        if check_collision_recs(Rectangle(a.x, a.y, mot_flash_anzan_grid_size / 2, 50), Rectangle(b.x, b.y, mot_flash_anzan_grid_size / 2, 50)):
+                                        if check_collision_recs(Rectangle(a.x, a.y, mot_flash_anzan_grid_size, 25), Rectangle(b.x, b.y, mot_flash_anzan_grid_size, 25)):
                                             mot_flash_anzan_directions[i]["Direction"], mot_flash_anzan_directions[j]["Direction"] = mot_flash_anzan_directions[j]["Direction"], mot_flash_anzan_directions[i]["Direction"]
                                             mot_flash_anzan_directions[i]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                             mot_flash_anzan_directions[j]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                             changed_filter.append(i)
                                             changed_filter.append(j)
-                                    c = Vector2(a.x + (mot_flash_anzan_grid_size / 2), a.y + 50)
+                                            break
+                                    c = Vector2(a.x + (mot_flash_anzan_grid_size), a.y + 25)
                                     if i not in changed_filter:
                                         if not check_collision_point_rec(a, Rectangle(0, 0, RESOLUTION_X, RESOLUTION_Y)):
                                             if a.x < 0:
@@ -385,9 +386,9 @@ while not window_should_close():
                                     mot_flash_anzan_directions[i]["Direction"] = vector2_scale(vector2_normalize(mot_flash_anzan_directions[i]["Direction"]), mot_flash_anzan_directions[i]["Speed"])
                                     mot_flash_anzan_directions[i]["Position"] = vector2_add(mot_flash_anzan_directions[i]["Position"], mot_flash_anzan_directions[i]["Direction"])
                                     if i < MOT_FLASH_ANZAN_SETTINGS["Trackers"]:
-                                        draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 50, WHITE)
+                                        draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 25, WHITE)
                                     elif time_elapsed_init > ((MOT_FLASH_ANZAN_SETTINGS["Interval"] * MOT_FLASH_ANZAN_SETTINGS["Generations"]) / 2):
-                                        draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 50, WHITE)
+                                        draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 25, WHITE)
                                     mot_flash_anzan_directions[i]["Speed"] = max(mot_flash_anzan_directions[i]["Speed"] * 0.99, MOT_FLASH_ANZAN_SETTINGS["Speed"])
                         if is_key_pressed(KeyboardKey.KEY_V):
                             game_state = GameState.LOBBY
@@ -397,7 +398,7 @@ while not window_should_close():
                             mot_flash_anzan_input = ""
                             mot_flash_anzan_x_filter = []
                             mot_flash_anzan_y_filter = []
-                            mot_flash_anzan_grid_size = measure_text("0" * MOT_FLASH_ANZAN_SETTINGS["Span"], 50) * 2
+                            mot_flash_anzan_grid_size = measure_text("0" * MOT_FLASH_ANZAN_SETTINGS["Span"], 25)
                             mot_flash_anzan_directions = []
                             mot_flash_anzan_generations = 0
                             mot_flash_anzan_init_clock = 0.0
