@@ -361,8 +361,6 @@ while not window_should_close():
                                         b = mot_flash_anzan_directions[j]["Position"]
                                         if check_collision_recs(Rectangle(a.x, a.y, mot_flash_anzan_grid_size, 25), Rectangle(b.x, b.y, mot_flash_anzan_grid_size, 25)):
                                             mot_flash_anzan_directions[i]["Direction"], mot_flash_anzan_directions[j]["Direction"] = mot_flash_anzan_directions[j]["Direction"], mot_flash_anzan_directions[i]["Direction"]
-                                            mot_flash_anzan_directions[i]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
-                                            mot_flash_anzan_directions[j]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                             changed_filter.append(i)
                                             changed_filter.append(j)
                                             break
@@ -371,17 +369,13 @@ while not window_should_close():
                                         if not check_collision_point_rec(a, Rectangle(0, 0, RESOLUTION_X, RESOLUTION_Y)):
                                             if a.x < 0:
                                                 mot_flash_anzan_directions[i]["Direction"] = Vector2(-mot_flash_anzan_directions[i]["Direction"].x, mot_flash_anzan_directions[i]["Direction"].y) 
-                                                mot_flash_anzan_directions[i]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                             elif a.y < 0:
                                                 mot_flash_anzan_directions[i]["Direction"] = Vector2(mot_flash_anzan_directions[i]["Direction"].x, -mot_flash_anzan_directions[i]["Direction"].y)
-                                                mot_flash_anzan_directions[i]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                         elif not check_collision_point_rec(c, Rectangle(0, 0, RESOLUTION_X, RESOLUTION_Y)):
                                             if c.x > RESOLUTION_X:
                                                 mot_flash_anzan_directions[i]["Direction"] = Vector2(-mot_flash_anzan_directions[i]["Direction"].x, mot_flash_anzan_directions[i]["Direction"].y)
-                                                mot_flash_anzan_directions[i]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                             elif c.y > RESOLUTION_Y:
                                                 mot_flash_anzan_directions[i]["Direction"] = Vector2(mot_flash_anzan_directions[i]["Direction"].x, -mot_flash_anzan_directions[i]["Direction"].y)
-                                                mot_flash_anzan_directions[i]["Speed"] = MOT_FLASH_ANZAN_SETTINGS["Speed"] * 1.5
                                 for i in range(MOT_FLASH_ANZAN_SETTINGS["Trackers"] + MOT_FLASH_ANZAN_SETTINGS["Distractors"]):
                                     mot_flash_anzan_directions[i]["Direction"] = vector2_scale(vector2_normalize(mot_flash_anzan_directions[i]["Direction"]), mot_flash_anzan_directions[i]["Speed"])
                                     mot_flash_anzan_directions[i]["Position"] = vector2_add(mot_flash_anzan_directions[i]["Position"], mot_flash_anzan_directions[i]["Direction"])
@@ -389,7 +383,6 @@ while not window_should_close():
                                         draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 25, WHITE)
                                     elif time_elapsed_init > ((MOT_FLASH_ANZAN_SETTINGS["Interval"] * MOT_FLASH_ANZAN_SETTINGS["Generations"]) / 2):
                                         draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 25, WHITE)
-                                    mot_flash_anzan_directions[i]["Speed"] = max(mot_flash_anzan_directions[i]["Speed"] * 0.99, MOT_FLASH_ANZAN_SETTINGS["Speed"])
                         if is_key_pressed(KeyboardKey.KEY_V):
                             game_state = GameState.LOBBY
                             is_evaluate_time = False
