@@ -15,10 +15,10 @@ FLASH_ANZAN_SETTINGS = {
     "Interval": 0.5
 }
 MOT_FLASH_ANZAN_SETTINGS = {
-    "Span": 1,
-    "Generations": 3,
+    "Span": 2,
+    "Generations": 2,
     "Trackers": 2,
-    "Distractors": 8,
+    "Distractors": 5,
     "Interval": 2.0,
     "Speed": 6.0,
 }
@@ -381,7 +381,7 @@ while not window_should_close():
                                     mot_flash_anzan_directions[i]["Position"] = vector2_add(mot_flash_anzan_directions[i]["Position"], mot_flash_anzan_directions[i]["Direction"])
                                     if i < MOT_FLASH_ANZAN_SETTINGS["Trackers"]:
                                         draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 25, WHITE)
-                                    elif time_elapsed_init > ((MOT_FLASH_ANZAN_SETTINGS["Interval"] * MOT_FLASH_ANZAN_SETTINGS["Generations"]) / 2):
+                                    elif time_elapsed_init > max(((MOT_FLASH_ANZAN_SETTINGS["Interval"] * MOT_FLASH_ANZAN_SETTINGS["Generations"]) / 2), MOT_FLASH_ANZAN_SETTINGS["Interval"] + 2.0):
                                         draw_text(str(mot_flash_anzan_number_list[i][-1]), int(mot_flash_anzan_directions[i]["Position"].x), int(mot_flash_anzan_directions[i]["Position"].y), 25, WHITE)
                         if is_key_pressed(KeyboardKey.KEY_V):
                             game_state = GameState.LOBBY
