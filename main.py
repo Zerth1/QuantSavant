@@ -15,8 +15,8 @@ FLASH_ANZAN_SETTINGS = {
     "Interval": 0.5
 }
 MOT_FLASH_ANZAN_SETTINGS = {
-    "Span": 2,
-    "Generations": 2,
+    "Span": 1,
+    "Generations": 3,
     "Trackers": 2,
     "Distractors": 5,
     "Interval": 2.0,
