@@ -1,6 +1,6 @@
 # Quant Savant
 
-![apple-touch-icon](https://github.com/user-attachments/assets/2c35afd7-ac73-4202-91c8-26ed8a1337d9)
+![QuantSavant_Logo_7](https://github.com/user-attachments/assets/9a6d33a3-c496-416d-bc55-b1f880d986a8)
 
 **An experimental game that strains numerical processing and abilities:**
 
