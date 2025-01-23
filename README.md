@@ -3,6 +3,7 @@
 ![image](https://github.com/user-attachments/assets/aad20689-eba0-4761-ae88-d8dcd6cbd60a)
 
 **An experimental game that strains numerical processing and abilities:**
+
 Programming: zerth1
 Art: L.D. John
 
