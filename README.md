@@ -1,6 +1,6 @@
 # Quant Savant
 
-![QuantSavant_Logo_7](https://github.com/user-attachments/assets/9a6d33a3-c496-416d-bc55-b1f880d986a8)
+![image](https://github.com/user-attachments/assets/aad20689-eba0-4761-ae88-d8dcd6cbd60a)
 
 **An experimental game that strains numerical processing and abilities:**
 
