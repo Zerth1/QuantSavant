@@ -239,12 +239,20 @@ settings_buttons["ANAGRAMING" + "Span"] = user_interface.InputButton("Span:", 25
 settings_buttons["ANAGRAMING" + "Span"].text = str(settings_data["ANAGRAMING_SETTINGS"]["Span"])
 settings_buttons["ANAGRAMING" + "LookTime"] = user_interface.InputButton("LookTime:", 25, Rectangle(3 * RESOLUTION_X / 4, 300.0, measure_text("00000", 25), 25.0))
 settings_buttons["ANAGRAMING" + "LookTime"].text = str(settings_data["ANAGRAMING_SETTINGS"]["LookTime"])
+
+wallpaper = load_image("lobby_symbols.png")
+game_mode_wallpaper = load_image("game_symbols.png")
+texture = load_texture_from_image(wallpaper)
+game_mode_texture = load_texture_from_image(game_mode_wallpaper)
+unload_image(wallpaper)
+unload_image(game_mode_wallpaper)
 while not window_should_close():
     begin_drawing()
     clear_background(BLACK)
     if get_time() > 2.0:
         match game_state:
             case GameState.LOBBY:
+                draw_texture(texture, 0, 0, GRAY)
                 if didnt_start_lobby:
                     didnt_start_lobby = False
                     dialogue_objects["Title"].toggle()
@@ -256,6 +264,7 @@ while not window_should_close():
                 lobby_selection()
                 gamemode_selection()
             case GameState.PLAYING:
+                draw_texture(game_mode_texture, 0, 0, GRAY)
                 match game_mode:
                     case "Digit Processing":
                         if is_evaluate_time:
