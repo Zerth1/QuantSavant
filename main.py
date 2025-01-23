@@ -390,7 +390,7 @@ while not window_should_close():
                                 mot_flash_anzan_input = mot_flash_anzan_input[:-1]
                             elif is_key_pressed(KeyboardKey.KEY_ENTER):
                                 is_correct = str(sum(mot_flash_anzan_number_list[mot_flash_anzan_input_number])) == mot_flash_anzan_input
-                                if not is_correct or mot_flash_anzan_input_number == MOT_FLASH_ANZAN_SETTINGS["Trackers"] - 1:
+                                if not is_correct or mot_flash_anzan_input_number == settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Trackers"] - 1:
                                     game_state = GameState.RESULTS
                                     is_evaluate_time = False
                                     reset_flash_anzan_ultra()
