@@ -16,7 +16,7 @@ Settings:
 - Anagraming Stimuli: Determines whether or not anagraming will be considered as a stimuli.
 - Audio Stimuli: Determines whether or not audio will be considered as a stimuli.
 - N: For every colored object, you are supposed to manipulate the information of the object from n-trials ago to find a match.
-- ConcurrentNumbers: Determines how many colored objects appear on the screen per generation
+- ConcurrentNumbers: Determines how many colored objects appear on the screen per generation.
 - GridSize: The dimensions of the grid in terms of cell count. 
 
 Programming: **zerth1**
