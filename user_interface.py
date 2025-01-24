@@ -4,6 +4,30 @@ READING_INTERVAL = 0.1
 TEXT_SPACING = 10
 
 DASH_INTERVAL = 2
+class Button:
+    def __init__(self, front_text: str, font_size: int, boundaries: Rectangle):
+        self.front_text = front_text
+        self.font_size = font_size
+        self.boundaries = boundaries
+        self._on = False
+        self._enabled = False
+    def update(self):
+        if not self._enabled:
+            return
+        boundaries = self.boundaries
+        current_position = get_mouse_position()
+        if is_mouse_button_pressed(MouseButton.MOUSE_BUTTON_LEFT):
+            if check_collision_point_rec(current_position, self.boundaries):
+                self.toggle_light()
+        if self._on:
+            draw_rectangle(int(boundaries.x), int(boundaries.y), int(boundaries.width), int(boundaries.height), GREEN)
+        else:
+            draw_rectangle(int(boundaries.x), int(boundaries.y), int(boundaries.width), int(boundaries.height), RED)           
+        draw_text(self.front_text, int(boundaries.x - measure_text(self.front_text, self.font_size) - 10), int(boundaries.y), self.font_size, WHITE)
+    def toggle(self):
+        self._enabled = not self._enabled
+    def toggle_light(self):
+        self._on = not self._on
 class InputButton:
     def __init__(self, front_text: str, font_size: int, boundaries: Rectangle):
         self.front_text = front_text
