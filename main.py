@@ -26,12 +26,21 @@ MODE_SETTINGS = {
         "Interval": 2.0,
         "Speed": 6.0,
     },
+    "N_BACK_ULTRA_SETTINGS": {
+        "PositionStimuli": True,
+        "AnagramingStimuli": True,  
+        "AudioStimuli": True, 
+        "N": 2, 
+        "ConcurrentNumbers": 2, # Maximum: 4
+        "GridSize": 3
+
+    },
     "ANAGRAMING_SETTINGS": {
         "Span": 9,
         "LookTime": 1.25,
     },
 }
-GAME_MODE_ORDER = ["Digit Processing", "Flash Anzan", "Flash Anzan ULTRA", "Anagraming"]
+GAME_MODE_ORDER = ["Digit Processing", "Flash Anzan", "Flash Anzan ULTRA", "N-Back ULTRA", "Anagraming"]
 class GameState(Enum):
     LOBBY = auto()
     PLAYING = auto()
@@ -164,6 +173,76 @@ def reset_flash_anzan_ultra():
     mot_flash_anzan_init_clock = 0.0
 ### ------------------------------ ###
 ###
+### N-Back ULTRA Helpers
+### ------------------------------ ###
+n_back_ultra_colors = [RED, GREEN, BLUE, YELLOW]
+n_back_ultra_x_filter = []
+n_back_ultra_grid = {}
+n_back_ultra_x_collection = []
+n_back_ultra_y_collection = []
+n_back_ultra_position_bool_collection = []
+n_back_ultra_anagram_bool_collection = []
+n_back_ultra_audio_bool_collection = []
+n_back_ultra_number_collection = []
+n_back_ultra_corresponding_x = []
+n_back_ultra_corresponding_y = []
+n_back_ultra_corresponding_number = []
+n_back_ultra_in_question = 0
+n_back_ultra_generations = 0
+n_back_ultra_has_generated = False
+n_back_ultra_has_pressed_position = False
+n_back_ultra_has_pressed_anagram = False
+n_back_ultra_has_pressed_audio = False
+n_back_ultra_didnt_start = True
+def draw_n_back_ultra_grid():
+    grid_size = settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"]
+    cell_size = RESOLUTION_Y / grid_size
+    for i in range(grid_size - 1):
+        x_offset = int(RESOLUTION_Y / 2)
+        y_offset = (cell_size * (i + 1))
+        draw_line_ex(Vector2(int((RESOLUTION_X / 2) - x_offset), int(y_offset)), Vector2(int((RESOLUTION_X / 2) + x_offset), int(y_offset)), 10, WHITE)
+    for j in range(grid_size - 1):
+        x_offset = int((RESOLUTION_Y / 2) - ((cell_size) + (cell_size * j)))
+        y_offset = int(RESOLUTION_Y / 2)
+        draw_line_ex(Vector2(int((RESOLUTION_X / 2) - x_offset), 0), Vector2(int((RESOLUTION_X / 2) - x_offset), 2 * y_offset), 10, WHITE)
+def reset_n_back_ultra():
+    global n_back_ultra_x_filter
+    global n_back_ultra_grid
+    global n_back_ultra_x_collection
+    global n_back_ultra_y_collection
+    global n_back_ultra_position_bool_collection
+    global n_back_ultra_anagram_bool_collection
+    global n_back_ultra_audio_bool_collection
+    global n_back_ultra_number_collection
+    global n_back_ultra_corresponding_x
+    global n_back_ultra_corresponding_y
+    global n_back_ultra_corresponding_number
+    global n_back_ultra_in_question
+    global n_back_ultra_generations
+    global n_back_ultra_has_generated
+    global n_back_ultra_has_pressed_position
+    global n_back_ultra_has_pressed_anagram
+    global n_back_ultra_has_pressed_audio
+    global n_back_ultra_didnt_start
+
+    n_back_ultra_x_filter = []
+    n_back_ultra_grid = {}
+    n_back_ultra_x_collection = []
+    n_back_ultra_y_collection = []
+    n_back_ultra_position_bool_collection = []
+    n_back_ultra_anagram_bool_collection = []
+    n_back_ultra_audio_bool_collection = []
+    n_back_ultra_number_collection = []
+    n_back_ultra_corresponding_x = []
+    n_back_ultra_corresponding_y = []
+    n_back_ultra_corresponding_number = []
+    n_back_ultra_in_question = 0
+    n_back_ultra_generations = 0
+    n_back_ultra_has_generated = False
+    n_back_ultra_has_pressed_position = False
+    n_back_ultra_has_pressed_anagram = False
+    n_back_ultra_has_pressed_audio = False
+    n_back_ultra_didnt_start = True
 ###
 ### Anagraming Helpers
 ### ------------------------------ ###
@@ -201,6 +280,13 @@ def toggle_settings_buttons():
             settings_buttons["MOT_FLASH_ANZAN" + "Trackers"].toggle()
             settings_buttons["MOT_FLASH_ANZAN" + "Distractors"].toggle()
             settings_buttons["MOT_FLASH_ANZAN" + "Speed"].toggle()
+        case "N-Back ULTRA":
+            settings_buttons["N_BACK_ULTRA" + "PositionStimuli"].toggle()
+            settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"].toggle()
+            settings_buttons["N_BACK_ULTRA" + "AudioStimuli"].toggle()
+            settings_buttons["N_BACK_ULTRA" + "N"].toggle()
+            settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].toggle()
+            settings_buttons["N_BACK_ULTRA" + "GridSize"].toggle()
         case "Anagraming":
             settings_buttons["ANAGRAMING" + "Span"].toggle()
             settings_buttons["ANAGRAMING" + "LookTime"].toggle()
@@ -235,6 +321,16 @@ settings_buttons["MOT_FLASH_ANZAN" + "Distractors"].text = str(settings_data["MO
 settings_buttons["MOT_FLASH_ANZAN" + "Speed"] = user_interface.InputButton("Speed:", 25, Rectangle(3 * RESOLUTION_X / 4, 500.0, measure_text("00000", 25), 25.0))
 settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text = str(settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"])
 
+settings_buttons["N_BACK_ULTRA" + "PositionStimuli"] = user_interface.Button("PositionStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 250.0, 25.0, 25.0))
+settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"] = user_interface.Button("AnagramingStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 300.0, 25.0, 25.0))
+settings_buttons["N_BACK_ULTRA" + "AudioStimuli"] = user_interface.Button("AudioStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 350.0, 25.0, 25.0))
+settings_buttons["N_BACK_ULTRA" + "N"] = user_interface.InputButton("N:", 25, Rectangle(3 * RESOLUTION_X / 4, 400.0, measure_text("00000", 25), 25.0))
+settings_buttons["N_BACK_ULTRA" + "N"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["N"])
+settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"] = user_interface.InputButton("ConcurrentNumbers:", 25, Rectangle(3 * RESOLUTION_X / 4, 450.0, measure_text("00000", 25), 25.0))
+settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"])
+settings_buttons["N_BACK_ULTRA" + "GridSize"] = user_interface.InputButton("GridSize:", 25, Rectangle(3 * RESOLUTION_X / 4, 500.0, measure_text("00000", 25), 25.0))
+settings_buttons["N_BACK_ULTRA" + "GridSize"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"])
+
 settings_buttons["ANAGRAMING" + "Span"] = user_interface.InputButton("Span:", 25, Rectangle(3 * RESOLUTION_X / 4, 250.0, measure_text("00000", 25), 25.0))
 settings_buttons["ANAGRAMING" + "Span"].text = str(settings_data["ANAGRAMING_SETTINGS"]["Span"])
 settings_buttons["ANAGRAMING" + "LookTime"] = user_interface.InputButton("LookTime:", 25, Rectangle(3 * RESOLUTION_X / 4, 300.0, measure_text("00000", 25), 25.0))
@@ -246,13 +342,20 @@ texture = load_texture_from_image(wallpaper)
 game_mode_texture = load_texture_from_image(game_mode_wallpaper)
 unload_image(wallpaper)
 unload_image(game_mode_wallpaper)
+lobby_a_color = Color(255, 255, 255, 255)
+lobby_b_color = Color(196, 218, 255, 255)
+lobby_color_alpha = 0.0
 while not window_should_close():
     begin_drawing()
     clear_background(BLACK)
     if get_time() > 2.0:
         match game_state:
             case GameState.LOBBY:
-                draw_texture(texture, 0, 0, GRAY)
+                lobby_color_alpha += get_frame_time() / 4.0
+                if lobby_color_alpha > 1:
+                    lobby_color_alpha = lobby_color_alpha % 1.0
+                    lobby_a_color, lobby_b_color = lobby_b_color, lobby_a_color
+                draw_texture(texture, 0, 0, color_lerp(lobby_a_color, lobby_b_color, lobby_color_alpha))
                 if didnt_start_lobby:
                     didnt_start_lobby = False
                     dialogue_objects["Title"].toggle()
@@ -264,7 +367,7 @@ while not window_should_close():
                 lobby_selection()
                 gamemode_selection()
             case GameState.PLAYING:
-                draw_texture(game_mode_texture, 0, 0, GRAY)
+                draw_texture(game_mode_texture, 0, 0, Color(255, 255, 255, 255))
                 match game_mode:
                     case "Digit Processing":
                         if is_evaluate_time:
@@ -488,6 +591,145 @@ while not window_should_close():
                             game_state = GameState.LOBBY
                             is_evaluate_time = False
                             reset_flash_anzan_ultra()
+                    case "N-Back ULTRA":
+                        if n_back_ultra_didnt_start:
+                            n_back_ultra_didnt_start = False
+                            interval_clock = get_time()
+                        if n_back_ultra_generations < settings_data["N_BACK_ULTRA_SETTINGS"]["N"] and get_time() - interval_clock > 5:
+                            interval_clock = get_time()
+                            n_back_ultra_has_generated = False
+                            n_back_ultra_generations += 1
+                        elif (n_back_ultra_in_question + 1) % (settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"] + 1) == 0:
+                            n_back_ultra_in_question = 0
+                            n_back_ultra_has_generated = False
+                        draw_n_back_ultra_grid()
+                        if n_back_ultra_has_generated:
+                            grid_size = settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"]
+                            cell_size = RESOLUTION_Y / grid_size
+                            x_cell = n_back_ultra_corresponding_x[n_back_ultra_in_question]
+                            y_cell = n_back_ultra_corresponding_y[n_back_ultra_in_question]
+                            if n_back_ultra_generations >= settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
+                                draw_rectangle_lines_ex(Rectangle(int(RESOLUTION_X / 2) - int(RESOLUTION_Y / 2) + int((cell_size / 2) * ((2 * (x_cell - 1)))), int((cell_size / 2) * ((2 * (y_cell - 1)))), cell_size, cell_size), 10.0, PURPLE)
+                                if n_back_ultra_has_pressed_position:
+                                    if n_back_ultra_position_bool_collection[n_back_ultra_in_question]:
+                                        draw_text("[A] Position", 50, 50, 25, GREEN)
+                                    else:
+                                        draw_text("[A] Position", 50, 50, 25, RED)
+                                else:
+                                    draw_text("[A] Position", 50, 50, 25, WHITE)
+                                if n_back_ultra_has_pressed_anagram:
+                                    if n_back_ultra_anagram_bool_collection[n_back_ultra_in_question]:
+                                        draw_text("[G] Anagram", 50, 100, 25, GREEN)
+                                    else:
+                                        draw_text("[G] Anagram", 50, 100, 25, RED)
+                                else:
+                                    draw_text("[G] Anagram", 50, 100, 25, WHITE)        
+                                if n_back_ultra_has_pressed_audio:
+                                    if n_back_ultra_audio_bool_collection[n_back_ultra_in_question]:
+                                        draw_text("[L] Audio", 50, 150, 25, GREEN)
+                                    else:
+                                        draw_text("[L] Audio", 50, 150, 25, RED)
+                                else:
+                                    draw_text("[L] Audio", 50, 150, 25, WHITE)   
+                                if is_key_pressed(KeyboardKey.KEY_A):
+                                    if settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"]:
+                                        n_back_ultra_has_pressed_position = True
+                                if is_key_pressed(KeyboardKey.KEY_G):
+                                    if settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"]:
+                                        n_back_ultra_has_pressed_anagram = True
+                                if is_key_pressed(KeyboardKey.KEY_L):
+                                    if settings_data["N_BACK_ULTRA_SETTINGS"]["AudioStimuli"]:
+                                        n_back_ultra_has_pressed_audio = True
+                                draw_text("[N] Next", 50, 200, 25, WHITE)
+                                if is_key_pressed(KeyboardKey.KEY_N):
+                                    n_back_ultra_in_question += 1
+                                    n_back_ultra_has_pressed_position = False
+                                    n_back_ultra_has_pressed_anagram = False
+                                    n_back_ultra_has_pressed_audio = False
+                            font_size = int(3 * (cell_size / (4 * 3)))
+                            for i in range(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]):
+                                x_cell = n_back_ultra_corresponding_x[i]
+                                y_cell = n_back_ultra_corresponding_y[i]
+                                draw_text(str(n_back_ultra_corresponding_number[i]), int(RESOLUTION_X / 2) - int(RESOLUTION_Y / 2) + int((cell_size / 2) * ((2 * (x_cell - 1)) + 1) - (3 * font_size / 4)), int((cell_size / 2) * ((2 * (y_cell - 1)) + 1) - (font_size / 2)), font_size, n_back_ultra_colors[i])                            
+                        else:
+                            n_back_ultra_has_pressed_position = False
+                            n_back_ultra_has_pressed_anagram = False
+                            n_back_ultra_has_pressed_audio = False
+                            n_back_ultra_has_generated = True
+                            n_back_ultra_corresponding_x = []
+                            n_back_ultra_corresponding_y = []
+                            n_back_ultra_x_filter = []
+                            n_back_ultra_grid = {}
+                            n_back_ultra_corresponding_number = []
+                            n_back_ultra_position_priority = []
+                            if n_back_ultra_generations >= settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
+                                for i in range(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]):
+                                    position_odds = random.random() < 0.50
+                                    if position_odds:
+                                        n_back_ultra_position_priority.append(i)
+                                        x_cell = n_back_ultra_x_collection[0][i] 
+                                        y_cell = n_back_ultra_y_collection[0][i]
+                                        n_back_ultra_corresponding_x.append(x_cell)
+                                        n_back_ultra_corresponding_y.append(y_cell)
+                                        if not n_back_ultra_grid.get(x_cell):
+                                            n_back_ultra_grid[x_cell] = list(range(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"] + 1)[1:])
+                                        n_back_ultra_grid[x_cell].remove(y_cell)
+                                        if len(n_back_ultra_grid[x_cell]) == 0:
+                                            n_back_ultra_x_filter.append(x_cell)
+                                        print("POSITION_REPLICATION")
+                            n_back_ultra_position_bool_collection = []
+                            n_back_ultra_anagram_bool_collection = []
+                            n_back_ultra_audio_bool_collection = []
+                            for i in range(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]):
+                                anagraming_odds = random.random() < 0.25
+                                audio_odds = random.random() < 0.25
+                                if n_back_ultra_generations >= settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
+                                    if i in n_back_ultra_position_priority:
+                                        n_back_ultra_position_bool_collection.append(True)
+                                    else:
+                                        n_back_ultra_position_bool_collection.append(False)
+                                    if anagraming_odds:
+                                        chosen_n_back_number = list(str(n_back_ultra_number_collection[0][i]))
+                                        random.shuffle(chosen_n_back_number)
+                                        chosen_n_back_number = ''.join(chosen_n_back_number)
+                                        n_back_ultra_corresponding_number.append(int(chosen_n_back_number))
+                                        print("ANAGRAMING_REPLICATION")
+                                    n_back_ultra_anagram_bool_collection.append(anagraming_odds)
+                                    n_back_ultra_audio_bool_collection.append(audio_odds)
+                                if not i in n_back_ultra_position_priority or n_back_ultra_generations < settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
+                                    x_cell = random.choice(list(set(range(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"] + 1)[1:]) - set(n_back_ultra_x_filter)))
+                                    if not n_back_ultra_grid.get(x_cell):
+                                        n_back_ultra_grid[x_cell] = list(range(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"] + 1)[1:])
+                                    y_cell = random.choice(n_back_ultra_grid[x_cell])
+                                    n_back_ultra_grid[x_cell].remove(y_cell)
+                                    if len(n_back_ultra_grid[x_cell]) == 0:
+                                        n_back_ultra_x_filter.append(x_cell)
+                                    n_back_ultra_corresponding_x.append(x_cell)
+                                    n_back_ultra_corresponding_y.append(y_cell)
+                                if not anagraming_odds or n_back_ultra_generations < settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
+                                    chosen_n_back_number = ""
+                                    remaining_digits = list(range(10))
+                                    for j in range(3):
+                                        if j == 0:
+                                            chosen_n_back_number += str(random.randint(1, 9))
+                                        else:
+                                            if j % 9 == 0:
+                                                remaining_digits = list(range(10))
+                                            chosen_one = random.choice(remaining_digits)
+                                            remaining_digits.remove(chosen_one)
+                                            chosen_n_back_number += str(chosen_one)
+                                    n_back_ultra_corresponding_number.append(int(chosen_n_back_number))
+                            n_back_ultra_x_collection.append(n_back_ultra_corresponding_x.copy())
+                            n_back_ultra_y_collection.append(n_back_ultra_corresponding_y.copy())
+                            n_back_ultra_number_collection.append(n_back_ultra_corresponding_number.copy())
+                            if len(n_back_ultra_x_collection) > settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
+                                n_back_ultra_x_collection.pop(0)
+                                n_back_ultra_y_collection.pop(0)
+                                n_back_ultra_number_collection.pop(0)
+                        if is_key_pressed(KeyboardKey.KEY_V):
+                            game_state = GameState.LOBBY     
+                            reset_n_back_ultra()    
+                            n_back_ultra_didnt_start = True
                     case "Anagraming":
                         if not is_generating_anagram:
                             is_generating_anagram = True
@@ -597,7 +839,17 @@ while not window_should_close():
                             settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Interval"] = float(settings_buttons["MOT_FLASH_ANZAN" + "Interval"].text) or settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Interval"]
                             settings_buttons["MOT_FLASH_ANZAN" + "Interval"].text = str(settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Interval"])        
                             settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"] = float(settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text) or settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"]
-                            settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text = str(settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"])    
+                            settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text = str(settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"])
+                        case "N-Back ULTRA":
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "PositionStimuli"]._on) or settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"]
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"]._on) or settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"]
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["AudioStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "AudioStimuli"]._on) or settings_data["N_BACK_ULTRA_SETTINGS"]["AudioStimuli"]
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["N"] = int(settings_buttons["N_BACK_ULTRA" + "N"].text) or settings_data["N_BACK_ULTRA_SETTINGS"]["N"]
+                            settings_buttons["N_BACK_ULTRA" + "N"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["N"])
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"] = int(settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].text) or settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]
+                            settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]) 
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"] = int(settings_buttons["N_BACK_ULTRA" + "GridSize"].text) or settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"]
+                            settings_buttons["N_BACK_ULTRA" + "GridSize"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"])            
                         case "Anagraming":
                             settings_data["ANAGRAMING_SETTINGS"]["Span"] = int(settings_buttons["ANAGRAMING" + "Span"].text) or settings_data["ANAGRAMING_SETTINGS"]["Span"]
                             settings_buttons["ANAGRAMING" + "Span"].text = str(settings_data["ANAGRAMING_SETTINGS"]["Span"])
