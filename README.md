@@ -2,7 +2,7 @@
 
 ![image](https://github.com/user-attachments/assets/aad20689-eba0-4761-ae88-d8dcd6cbd60a)
 
-**An experimental game that strains numerical processing and abilities:**
+**An experimental game that strains numerical processing and abilities**\
 **Digit Processing:** In digit processing, you are flashed with a series of numbers. Lets say you are flashed with 10 numbers which can be changed in settings. After, you are presented with 4 * 10 numbers sequentially. 3 / 4 of those are fakes that were manually constructed and you have to determine the 1 / 4 which were presented in the flashing phase. The fakes intentionally blend in pretty well with the real ones.\
 **Flash Anzan:** You are presented with a series of numbers to sum up in a time frame and are supposed to output the correct result.\
 **Flash Anzan ULTRA:** 2D MOT + Flash Anzan Combination (Very Hard)
