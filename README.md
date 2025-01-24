@@ -10,7 +10,7 @@
 
 **Flash Anzan ULTRA:** 2D MOT + Flash Anzan Combination (Very Hard)
 
-**N-Back ULTRA:**: A mathematical twist on the classical N-Back game (Very Hard).
+**N-Back ULTRA:** A mathematical twist on the classical N-Back game (Very Hard).
 Settings: 
 - Position Stimuli: Determines whether or not position will be considered as a stimuli.
 - Anagraming Stimuli: Determines whether or not anagraming will be considered as a stimuli.
