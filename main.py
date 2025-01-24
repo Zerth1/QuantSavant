@@ -314,7 +314,9 @@ settings_buttons["MOT_FLASH_ANZAN" + "Speed"] = user_interface.InputButton("Spee
 settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text = str(settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"])
 
 settings_buttons["N_BACK_ULTRA" + "PositionStimuli"] = user_interface.Button("PositionStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 250.0, 25.0, 25.0))
+settings_buttons["N_BACK_ULTRA" + "PositionStimuli"]._on = settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"]
 settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"] = user_interface.Button("AnagramingStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 300.0, 25.0, 25.0))
+settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"]._on = settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"]
 settings_buttons["N_BACK_ULTRA" + "N"] = user_interface.InputButton("N:", 25, Rectangle(3 * RESOLUTION_X / 4, 350.0, measure_text("00000", 25), 25.0))
 settings_buttons["N_BACK_ULTRA" + "N"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["N"])
 settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"] = user_interface.InputButton("ConcurrentNumbers:", 25, Rectangle(3 * RESOLUTION_X / 4, 400.0, measure_text("00000", 25), 25.0))
