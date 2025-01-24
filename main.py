@@ -29,7 +29,6 @@ MODE_SETTINGS = {
     "N_BACK_ULTRA_SETTINGS": {
         "PositionStimuli": True,
         "AnagramingStimuli": True,  
-        "AudioStimuli": True, 
         "N": 2, 
         "ConcurrentNumbers": 2, # Maximum: 4
         "GridSize": 3
@@ -182,7 +181,6 @@ n_back_ultra_x_collection = []
 n_back_ultra_y_collection = []
 n_back_ultra_position_bool_collection = []
 n_back_ultra_anagram_bool_collection = []
-n_back_ultra_audio_bool_collection = []
 n_back_ultra_number_collection = []
 n_back_ultra_corresponding_x = []
 n_back_ultra_corresponding_y = []
@@ -192,7 +190,6 @@ n_back_ultra_generations = 0
 n_back_ultra_has_generated = False
 n_back_ultra_has_pressed_position = False
 n_back_ultra_has_pressed_anagram = False
-n_back_ultra_has_pressed_audio = False
 n_back_ultra_didnt_start = True
 def draw_n_back_ultra_grid():
     grid_size = settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"]
@@ -212,7 +209,6 @@ def reset_n_back_ultra():
     global n_back_ultra_y_collection
     global n_back_ultra_position_bool_collection
     global n_back_ultra_anagram_bool_collection
-    global n_back_ultra_audio_bool_collection
     global n_back_ultra_number_collection
     global n_back_ultra_corresponding_x
     global n_back_ultra_corresponding_y
@@ -222,7 +218,6 @@ def reset_n_back_ultra():
     global n_back_ultra_has_generated
     global n_back_ultra_has_pressed_position
     global n_back_ultra_has_pressed_anagram
-    global n_back_ultra_has_pressed_audio
     global n_back_ultra_didnt_start
 
     n_back_ultra_x_filter = []
@@ -231,7 +226,6 @@ def reset_n_back_ultra():
     n_back_ultra_y_collection = []
     n_back_ultra_position_bool_collection = []
     n_back_ultra_anagram_bool_collection = []
-    n_back_ultra_audio_bool_collection = []
     n_back_ultra_number_collection = []
     n_back_ultra_corresponding_x = []
     n_back_ultra_corresponding_y = []
@@ -241,7 +235,6 @@ def reset_n_back_ultra():
     n_back_ultra_has_generated = False
     n_back_ultra_has_pressed_position = False
     n_back_ultra_has_pressed_anagram = False
-    n_back_ultra_has_pressed_audio = False
     n_back_ultra_didnt_start = True
 ###
 ### Anagraming Helpers
@@ -283,7 +276,6 @@ def toggle_settings_buttons():
         case "N-Back ULTRA":
             settings_buttons["N_BACK_ULTRA" + "PositionStimuli"].toggle()
             settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"].toggle()
-            settings_buttons["N_BACK_ULTRA" + "AudioStimuli"].toggle()
             settings_buttons["N_BACK_ULTRA" + "N"].toggle()
             settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].toggle()
             settings_buttons["N_BACK_ULTRA" + "GridSize"].toggle()
@@ -323,12 +315,11 @@ settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text = str(settings_data["MOT_FLAS
 
 settings_buttons["N_BACK_ULTRA" + "PositionStimuli"] = user_interface.Button("PositionStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 250.0, 25.0, 25.0))
 settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"] = user_interface.Button("AnagramingStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 300.0, 25.0, 25.0))
-settings_buttons["N_BACK_ULTRA" + "AudioStimuli"] = user_interface.Button("AudioStimuli:", 25, Rectangle(3 * RESOLUTION_X / 4, 350.0, 25.0, 25.0))
-settings_buttons["N_BACK_ULTRA" + "N"] = user_interface.InputButton("N:", 25, Rectangle(3 * RESOLUTION_X / 4, 400.0, measure_text("00000", 25), 25.0))
+settings_buttons["N_BACK_ULTRA" + "N"] = user_interface.InputButton("N:", 25, Rectangle(3 * RESOLUTION_X / 4, 350.0, measure_text("00000", 25), 25.0))
 settings_buttons["N_BACK_ULTRA" + "N"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["N"])
-settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"] = user_interface.InputButton("ConcurrentNumbers:", 25, Rectangle(3 * RESOLUTION_X / 4, 450.0, measure_text("00000", 25), 25.0))
+settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"] = user_interface.InputButton("ConcurrentNumbers:", 25, Rectangle(3 * RESOLUTION_X / 4, 400.0, measure_text("00000", 25), 25.0))
 settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"])
-settings_buttons["N_BACK_ULTRA" + "GridSize"] = user_interface.InputButton("GridSize:", 25, Rectangle(3 * RESOLUTION_X / 4, 500.0, measure_text("00000", 25), 25.0))
+settings_buttons["N_BACK_ULTRA" + "GridSize"] = user_interface.InputButton("GridSize:", 25, Rectangle(3 * RESOLUTION_X / 4, 450.0, measure_text("00000", 25), 25.0))
 settings_buttons["N_BACK_ULTRA" + "GridSize"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"])
 
 settings_buttons["ANAGRAMING" + "Span"] = user_interface.InputButton("Span:", 25, Rectangle(3 * RESOLUTION_X / 4, 250.0, measure_text("00000", 25), 25.0))
@@ -619,33 +610,22 @@ while not window_should_close():
                                     draw_text("[A] Position", 50, 50, 25, WHITE)
                                 if n_back_ultra_has_pressed_anagram:
                                     if n_back_ultra_anagram_bool_collection[n_back_ultra_in_question]:
-                                        draw_text("[G] Anagram", 50, 100, 25, GREEN)
+                                        draw_text("[L] Anagram", 50, 100, 25, GREEN)
                                     else:
-                                        draw_text("[G] Anagram", 50, 100, 25, RED)
+                                        draw_text("[L] Anagram", 50, 100, 25, RED)
                                 else:
-                                    draw_text("[G] Anagram", 50, 100, 25, WHITE)        
-                                if n_back_ultra_has_pressed_audio:
-                                    if n_back_ultra_audio_bool_collection[n_back_ultra_in_question]:
-                                        draw_text("[L] Audio", 50, 150, 25, GREEN)
-                                    else:
-                                        draw_text("[L] Audio", 50, 150, 25, RED)
-                                else:
-                                    draw_text("[L] Audio", 50, 150, 25, WHITE)   
+                                    draw_text("[L] Anagram", 50, 100, 25, WHITE)        
                                 if is_key_pressed(KeyboardKey.KEY_A):
                                     if settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"]:
                                         n_back_ultra_has_pressed_position = True
-                                if is_key_pressed(KeyboardKey.KEY_G):
+                                if is_key_pressed(KeyboardKey.KEY_L):
                                     if settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"]:
                                         n_back_ultra_has_pressed_anagram = True
-                                if is_key_pressed(KeyboardKey.KEY_L):
-                                    if settings_data["N_BACK_ULTRA_SETTINGS"]["AudioStimuli"]:
-                                        n_back_ultra_has_pressed_audio = True
-                                draw_text("[N] Next", 50, 200, 25, WHITE)
+                                draw_text("[N] Next", 50, 150, 25, WHITE)
                                 if is_key_pressed(KeyboardKey.KEY_N):
                                     n_back_ultra_in_question += 1
                                     n_back_ultra_has_pressed_position = False
                                     n_back_ultra_has_pressed_anagram = False
-                                    n_back_ultra_has_pressed_audio = False
                             font_size = int(3 * (cell_size / (4 * 3)))
                             for i in range(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]):
                                 x_cell = n_back_ultra_corresponding_x[i]
@@ -654,7 +634,6 @@ while not window_should_close():
                         else:
                             n_back_ultra_has_pressed_position = False
                             n_back_ultra_has_pressed_anagram = False
-                            n_back_ultra_has_pressed_audio = False
                             n_back_ultra_has_generated = True
                             n_back_ultra_corresponding_x = []
                             n_back_ultra_corresponding_y = []
@@ -676,13 +655,10 @@ while not window_should_close():
                                         n_back_ultra_grid[x_cell].remove(y_cell)
                                         if len(n_back_ultra_grid[x_cell]) == 0:
                                             n_back_ultra_x_filter.append(x_cell)
-                                        print("POSITION_REPLICATION")
                             n_back_ultra_position_bool_collection = []
                             n_back_ultra_anagram_bool_collection = []
-                            n_back_ultra_audio_bool_collection = []
                             for i in range(settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]):
                                 anagraming_odds = random.random() < 0.25
-                                audio_odds = random.random() < 0.25
                                 if n_back_ultra_generations >= settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
                                     if i in n_back_ultra_position_priority:
                                         n_back_ultra_position_bool_collection.append(True)
@@ -695,7 +671,6 @@ while not window_should_close():
                                         n_back_ultra_corresponding_number.append(int(chosen_n_back_number))
                                         print("ANAGRAMING_REPLICATION")
                                     n_back_ultra_anagram_bool_collection.append(anagraming_odds)
-                                    n_back_ultra_audio_bool_collection.append(audio_odds)
                                 if not i in n_back_ultra_position_priority or n_back_ultra_generations < settings_data["N_BACK_ULTRA_SETTINGS"]["N"]:
                                     x_cell = random.choice(list(set(range(settings_data["N_BACK_ULTRA_SETTINGS"]["GridSize"] + 1)[1:]) - set(n_back_ultra_x_filter)))
                                     if not n_back_ultra_grid.get(x_cell):
@@ -841,9 +816,8 @@ while not window_should_close():
                             settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"] = float(settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text) or settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"]
                             settings_buttons["MOT_FLASH_ANZAN" + "Speed"].text = str(settings_data["MOT_FLASH_ANZAN_SETTINGS"]["Speed"])
                         case "N-Back ULTRA":
-                            settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "PositionStimuli"]._on) or settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"]
-                            settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"]._on) or settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"]
-                            settings_data["N_BACK_ULTRA_SETTINGS"]["AudioStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "AudioStimuli"]._on) or settings_data["N_BACK_ULTRA_SETTINGS"]["AudioStimuli"]
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["PositionStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "PositionStimuli"]._on)
+                            settings_data["N_BACK_ULTRA_SETTINGS"]["AnagramingStimuli"] = bool(settings_buttons["N_BACK_ULTRA" + "AnagramingStimuli"]._on)
                             settings_data["N_BACK_ULTRA_SETTINGS"]["N"] = int(settings_buttons["N_BACK_ULTRA" + "N"].text) or settings_data["N_BACK_ULTRA_SETTINGS"]["N"]
                             settings_buttons["N_BACK_ULTRA" + "N"].text = str(settings_data["N_BACK_ULTRA_SETTINGS"]["N"])
                             settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"] = int(settings_buttons["N_BACK_ULTRA" + "ConcurrentNumbers"].text) or settings_data["N_BACK_ULTRA_SETTINGS"]["ConcurrentNumbers"]
