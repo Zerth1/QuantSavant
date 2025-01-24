@@ -20,6 +20,7 @@ Settings:
 - GridSize: The dimensions of the grid in terms of cell count. 
 
 Programming: **zerth1**
+
 Art: **L.D. John**
 
 https://github.com/user-attachments/assets/2796b9ef-2916-4ef5-82b8-292d044190ad
